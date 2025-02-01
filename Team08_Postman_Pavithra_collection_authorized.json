@@ -1,0 +1,4551 @@
+{
+	"info": {
+		"_postman_id": "c52f6cf3-f25f-4193-bb3e-77afda79c1a3",
+		"name": "API bootcamp Team08_Pavithra",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37688289",
+		"_collection_link": "https://www.postman.com/pavithrasubburaj/workspace/my-workspace/collection/37688289-c52f6cf3-f25f-4193-bb3e-77afda79c1a3?action=share&source=collection_link&creator=37688289"
+	},
+	"item": [
+		{
+			"name": "Get all Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code validation\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response=pm.response.json();\r",
+							"console.log(response.user_id);\r",
+							"pm.globals.set(\"user_id\", response[1].user_id);\r",
+							"pm.globals.set(\"user_first_name\",response[2].user_first_name);\r",
+							"\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+							"});\r",
+							"const schema = {\r",
+							"  \"type\": \"array\",\r",
+							"  \"properties\": {\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": {\"type\": \"integer\"},\r",
+							"        \"plotNumber\": {\"type\": \"string\"},\r",
+							"        \"street\": {\"type\": \"string\"},\r",
+							"        \"state\": {\"type\": \"string\"},\r",
+							"        \"country\": {\"type\": \"string\"},\r",
+							"        \"zipCode\": {\"type\": \"integer\"}\r",
+							"      },\r",
+							"      \"required\": [\"addressId\", \"plotNumber\", \"street\", \"state\", \"country\", \"zipCode\"]\r",
+							"    },\r",
+							"    \"user_id\": {\"type\": \"integer\"},\r",
+							"    \"user_first_name\": {\"type\": \"string\"},\r",
+							"    \"user_last_name\": {\"type\": \"string\"},\r",
+							"    \"user_contact_number\": {\"type\": \"integer\"},\r",
+							"    \"user_email_id\": {\"type\": \"string\"},\r",
+							"    \"creation_time\": {\"type\": \"string\"},\r",
+							"    \"last_mod_time\": {\"type\": \"string\"}\r",
+							"  },\r",
+							"  \"required\": [\"userAddress\", \"user_id\", \"user_first_name\", \"user_last_name\", \"user_contact_number\", \"user_email_id\", \"creation_time\", \"last_mod_time\"]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"  if (pm.response.text() !== \"\") {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.be.an(\"array\");\r",
+							"    pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"  } else {\r",
+							"    pm.expect.fail(\"Response body is empty\");\r",
+							"  }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Data validation-alldata\", function () {\r",
+							"  // Check if response is not empty\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"\r",
+							"  // Parse response as JSON\r",
+							"  const jsonData = pm.response.json();\r",
+							"\r",
+							"  // Check if response is an array\r",
+							"  pm.expect(jsonData).to.be.an(\"array\");\r",
+							"\r",
+							"  // Iterate over each item in the array\r",
+							"  jsonData.forEach((item) => {\r",
+							"    // Check user properties\r",
+							"    const userProperties = [\"user_first_name\", \"user_last_name\", \"user_contact_number\", \"user_email_id\"];\r",
+							"    userProperties.forEach((property) => {\r",
+							"      pm.expect(item).to.have.property(property);\r",
+							"    });\r",
+							"\r",
+							"    // Check address properties\r",
+							"    const addressProperties = [\"addressId\", \"plotNumber\", \"street\", \"state\", \"country\", \"zipCode\"];\r",
+							"    addressProperties.forEach((property) => {\r",
+							"      pm.expect(item.userAddress).to.have.property(property);\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Data type verification with type\", function () {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.an(\"array\");\r",
+							"\r",
+							"  jsonData.forEach((item) => {\r",
+							"    // Verify user property data types\r",
+							"    pm.expect(item.user_first_name).to.be.a(\"string\");\r",
+							"    pm.expect(item.user_last_name).to.be.a(\"string\");\r",
+							"    pm.expect(item.user_contact_number).to.be.a(\"number\");\r",
+							"    pm.expect(item.user_email_id).to.be.a(\"string\");\r",
+							"\r",
+							"    // Verify address property data types\r",
+							"    pm.expect(item.userAddress.addressId).to.be.a(\"number\");\r",
+							"    pm.expect(item.userAddress.plotNumber).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.street).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.state).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.country).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.zipCode).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"number\";\r",
+							"    });\r",
+							"  });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/users",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Users-invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/user",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Id valid data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+							"});\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": {\"type\": \"integer\"},\r",
+							"        \"plotNumber\": {\"type\": [\"string\", \"null\"]},\r",
+							"        \"street\": {\"type\": [\"string\", \"null\"]},\r",
+							"        \"state\": {\"type\": [\"string\", \"null\"]},\r",
+							"        \"country\": {\"type\": [\"string\", \"null\"]},\r",
+							"        \"zipCode\": {\"type\": [\"integer\", \"null\"]}\r",
+							"      },\r",
+							"     \r",
+							"    },\r",
+							"    \"user_id\": {\"type\": \"integer\"},\r",
+							"    \"user_first_name\": {\"type\": \"string\"},\r",
+							"    \"user_last_name\": {\"type\": \"string\"},\r",
+							"    \"user_contact_number\": {\"type\": \"integer\"},\r",
+							"    \"user_email_id\": {\"type\": \"string\"},\r",
+							"    \"creation_time\": {\"type\": \"string\"},\r",
+							"    \"last_mod_time\": {\"type\": \"string\"}\r",
+							"  },\r",
+							"  \"required\": [\"user_first_name\", \"user_last_name\", \"user_contact_number\", \"user_email_id\"]\r",
+							"};\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"pm.test(\"Data type verification with type\", function () {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"  const jsonData = pm.response.json();\r",
+							"\r",
+							"  // Verify user property data types\r",
+							"  pm.expect(jsonData.user_first_name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.user_last_name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.user_contact_number).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.user_email_id).to.be.a(\"string\");\r",
+							"\r",
+							"  // Verify address property data types\r",
+							"  pm.expect(jsonData.userAddress.addressId).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.userAddress.plotNumber).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.street).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.state).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.country).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.zipCode).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"number\";\r",
+							"  });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/user/:id",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Id- invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/users/:id",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Id invalid data -non existing id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/user/:id",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Id invalid data-missing id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/user/:id",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by FirstName valid data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+							"});\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"array\",\r",
+							"  \"properties\": {\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": {\"type\": \"integer\"},\r",
+							"        \"plotNumber\": {\"type\": \"string\"},\r",
+							"        \"street\": {\"type\": \"string\"},\r",
+							"        \"state\": {\"type\": \"string\"},\r",
+							"        \"country\": {\"type\": \"string\"},\r",
+							"        \"zipCode\": {\"type\": \"integer\"}\r",
+							"      },\r",
+							"      \"required\": [\"addressId\", \"plotNumber\", \"street\", \"state\", \"country\", \"zipCode\"]\r",
+							"    },\r",
+							"    \"user_id\": {\"type\": \"integer\"},\r",
+							"    \"user_first_name\": {\"type\": \"string\"},\r",
+							"    \"user_last_name\": {\"type\": \"string\"},\r",
+							"    \"user_contact_number\": {\"type\": \"integer\"},\r",
+							"    \"user_email_id\": {\"type\": \"string\"},\r",
+							"    \"creation_time\": {\"type\": \"string\"},\r",
+							"    \"last_mod_time\": {\"type\": \"string\"}\r",
+							"  },\r",
+							"  \"required\": [\"userAddress\", \"user_id\", \"user_first_name\", \"user_last_name\", \"user_contact_number\", \"user_email_id\", \"creation_time\", \"last_mod_time\"]\r",
+							"};\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Data type verification with type\", function () {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.an(\"array\");\r",
+							"\r",
+							"  jsonData.forEach((item) => {\r",
+							"    // Verify user property data types\r",
+							"    pm.expect(item.user_first_name).to.be.a(\"string\");\r",
+							"    pm.expect(item.user_last_name).to.be.a(\"string\");\r",
+							"    pm.expect(item.user_contact_number).to.be.a(\"number\");\r",
+							"    pm.expect(item.user_email_id).to.be.a(\"string\");\r",
+							"\r",
+							"    // Verify address property data types\r",
+							"    pm.expect(item.userAddress.addressId).to.be.a(\"number\");\r",
+							"    pm.expect(item.userAddress.plotNumber).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.street).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.state).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.country).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"string\";\r",
+							"    });\r",
+							"    pm.expect(item.userAddress.zipCode).to.satisfy(function (value) {\r",
+							"      return value === null || typeof value === \"number\";\r",
+							"    });\r",
+							"  });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/users/username/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"username",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": "{{user_first_name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by FirstName -invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/users/username/:userFirtName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"username",
+						":userFirtName"
+					],
+					"variable": [
+						{
+							"key": "userFirtName",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by FirstName invalid data-missing FirstName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/users/username/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"username",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by FirstName invalid data-nonexisting FirstName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/users/username/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"users",
+						"username",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": "xxxxx"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id valid data all fields given",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+							"});\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": {\"type\": \"integer\"},\r",
+							"        \"plotNumber\": {\"type\": \"string\"},\r",
+							"        \"street\": {\"type\": \"string\"},\r",
+							"        \"state\": {\"type\": \"string\"},\r",
+							"        \"country\": {\"type\": \"string\"},\r",
+							"        \"zipCode\": {\"type\": \"integer\"}\r",
+							"      },\r",
+							"      \"required\": [\"addressId\", \"plotNumber\", \"street\", \"state\", \"country\", \"zipCode\"]\r",
+							"    },\r",
+							"    \"user_id\": {\"type\": \"integer\"},\r",
+							"    \"user_first_name\": {\"type\": \"string\"},\r",
+							"    \"user_last_name\": {\"type\": \"string\"},\r",
+							"    \"user_contact_number\": {\"type\": \"integer\"},\r",
+							"    \"user_email_id\": {\"type\": \"string\"},\r",
+							"    \"creation_time\": {\"type\": \"string\"},\r",
+							"    \"last_mod_time\": {\"type\": \"string\"}\r",
+							"  },\r",
+							"  \"required\": [\"userAddress\", \"user_id\", \"user_first_name\", \"user_last_name\", \"user_contact_number\", \"user_email_id\", \"creation_time\", \"last_mod_time\"]\r",
+							"};\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data type verification with type\", function () {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"  const jsonData = pm.response.json();\r",
+							"\r",
+							"  // Verify user property data types\r",
+							"  pm.expect(jsonData.user_first_name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.user_last_name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.user_contact_number).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.user_email_id).to.be.a(\"string\");\r",
+							"\r",
+							"  // Verify address property data types\r",
+							"  pm.expect(jsonData.userAddress.addressId).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.userAddress.plotNumber).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.street).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.state).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.country).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.zipCode).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"number\";\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation with type\", function () {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"  const item = pm.response.json();\r",
+							"\r",
+							"  \r",
+							"    pm.expect(item).to.have.property(\"user_first_name\");\r",
+							"    pm.expect(item.user_first_name).to.be.a(\"string\");\r",
+							"\r",
+							"    pm.expect(item).to.have.property(\"user_last_name\");\r",
+							"    pm.expect(item.user_last_name).to.be.a(\"string\");\r",
+							"\r",
+							"    pm.expect(item).to.have.property(\"user_contact_number\");\r",
+							"    pm.expect(item.user_contact_number).to.be.a(\"number\");\r",
+							"\r",
+							"    pm.expect(item).to.have.property(\"user_email_id\");\r",
+							"    pm.expect(item.user_email_id).to.be.a(\"string\");\r",
+							"\r",
+							"    pm.expect(item).to.have.property(\"user_id\");\r",
+							"    pm.expect(item.user_id).to.be.a(\"number\");\r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \"addressId\": 12112,\r\n        \"plotNumber\": \"pl-00\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \"user_id\": 12045,\r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\",\r\n    \"creation_time\": \"2025-01-30T04:49:46.711+00:00\",\r\n    \"last_mod_time\": \"2025-01-30T04:49:46.711+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id valid data -invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \"addressId\": 12112,\r\n        \"plotNumber\": \"pl-00\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \"user_id\": 12045,\r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\",\r\n    \"creation_time\": \"2025-01-30T04:49:46.711+00:00\",\r\n    \"last_mod_time\": \"2025-01-30T04:49:46.711+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateusr/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateusr",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data- missing plotno",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Plot number alphaNumeric validation \", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Plot number should contain alphaNumeric values only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \r\n        \"plotNumber\": \"\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\"\r\n    \r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data- missing street",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Plot number alphaNumeric validation \", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Street should contain alphabet characters only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \r\n        \"plotNumber\": \"pl-56\",\r\n        \"street\": \"\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\"\r\n    \r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data- missing state",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Plot number alphaNumeric validation \", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"State should contain alphabet characters only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \r\n        \"plotNumber\": \"pl-23\",\r\n        \"street\": \"street\",\r\n        \"state\": \"\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\"\r\n    \r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data- missing zipCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \r\n        \"plotNumber\": \"pl-45\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": \r\n    },\r\n    \r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\"\r\n    \r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data-  zipCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \r\n        \"plotNumber\": \"pl-45\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"sdsds\",\r\n        \"zipCode\": \"sas\"\r\n    },\r\n    \r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\"\r\n    \r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data- missing Country",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Plot number alphaNumeric validation \", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Country should contain alphabet characters only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \r\n        \"plotNumber\": \"pl-45\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \r\n    \"user_first_name\": \"testuser\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\"\r\n    \r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data-missing FirstName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User First Name is mandatory and should contains alphabets only\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \"addressId\": 12112,\r\n        \"plotNumber\": \"pl-00\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \"user_id\": 12045,\r\n    \"user_first_name\": \"\",\r\n    \"user_last_name\": \"usrlast\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\",\r\n    \"creation_time\": \"2025-01-30T04:49:46.711+00:00\",\r\n    \"last_mod_time\": \"2025-01-30T04:49:46.711+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data-missing LastName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User Last Name is mandatory and should contains alphabets only\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \"addressId\": 12112,\r\n        \"plotNumber\": \"pl-00\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \"user_id\": 12045,\r\n    \"user_first_name\": \"usrlast\",\r\n    \"user_last_name\": \"\",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"{{$randomEmail}}\",\r\n    \"creation_time\": \"2025-01-30T04:49:46.711+00:00\",\r\n    \"last_mod_time\": \"2025-01-30T04:49:46.711+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data-missing contactno",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Phone Number is required and should contains 10 numeric values only\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \"addressId\": 12112,\r\n        \"plotNumber\": \"pl-00\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \"user_id\": 12045,\r\n    \"user_first_name\": \"First name\",\r\n    \"user_last_name\": \"Last Name \",\r\n    \"user_contact_number\": \"\",\r\n    \"user_email_id\": \"{{$randomEmail}}\",\r\n    \"creation_time\": \"2025-01-30T04:49:46.711+00:00\",\r\n    \"last_mod_time\": \"2025-01-30T04:49:46.711+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data-missing email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User email Id is required\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userAddress\": {\r\n        \"addressId\": 12112,\r\n        \"plotNumber\": \"pl-00\",\r\n        \"street\": \"street\",\r\n        \"state\": \"az\",\r\n        \"country\": \"country\",\r\n        \"zipCode\": 12356\r\n    },\r\n    \"user_id\": 12045,\r\n    \"user_first_name\": \"First name\",\r\n    \"user_last_name\": \"Last Name \",\r\n    \"user_contact_number\": {{randomNumber}},\r\n    \"user_email_id\": \"\",\r\n    \"creation_time\": \"2025-01-30T04:49:46.711+00:00\",\r\n    \"last_mod_time\": \"2025-01-30T04:49:46.711+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data- existing contactno",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"status\": {\"type\": \"string\"},\r",
+							"    \"message\": {\"type\": \"string\"}\r",
+							"\t}\r",
+							"};\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Contact number is already in use by another user\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"userAddress\": {\r\n            \"addressId\": 3629,\r\n            \"plotNumber\": \"pl-00\",\r\n            \"street\": \"WestLake lane\",\r\n            \"state\": \"Texas\",\r\n            \"country\": \"USA\",\r\n            \"zipCode\": 75064\r\n        },\r\n        \"user_id\": 3662,\r\n        \"user_first_name\": \"Gayathri\",\r\n        \"user_last_name\": \"Selvaraj\",\r\n        \"user_contact_number\": 1234567891,\r\n        \"user_email_id\": \"yatra@gmail.com\",\r\n        \"creation_time\": \"2024-09-23T15:06:12.155+00:00\",\r\n        \"last_mod_time\": \"2024-09-23T15:06:12.155+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT  User update by User Id invalid data -existing email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Conflict\");\r",
+							"});\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"status\": {\"type\": \"string\"},\r",
+							"    \"message\": {\"type\": \"string\"}\r",
+							"\t}\r",
+							"};\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"email already in use by another user\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"userAddress\": {\r\n            \"addressId\": 3629,\r\n            \"plotNumber\": \"pl-00\",\r\n            \"street\": \"WestLake lane\",\r\n            \"state\": \"Texas\",\r\n            \"country\": \"USA\",\r\n            \"zipCode\": 75064\r\n        },\r\n        \"user_id\": 3662,\r\n        \"user_first_name\": \"Gayathri\",\r\n        \"user_last_name\": \"Selvaraj\",\r\n        \"user_contact_number\": 1255556681,\r\n        \"user_email_id\": \"Numpy@gmail.com\",\r\n        \"creation_time\": \"2024-09-23T15:06:12.155+00:00\",\r\n        \"last_mod_time\": \"2024-09-23T15:06:12.155+00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/updateuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user valid data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Created\");\r",
+							"});\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"addressId\": {\"type\": \"integer\"},\r",
+							"        \"plotNumber\": {\"type\": \"string\"},\r",
+							"        \"street\": {\"type\": \"string\"},\r",
+							"        \"state\": {\"type\": \"string\"},\r",
+							"        \"country\": {\"type\": \"string\"},\r",
+							"        \"zipCode\": {\"type\": \"integer\"}\r",
+							"      },\r",
+							"      \"required\": [\"addressId\", \"plotNumber\", \"street\", \"state\", \"country\", \"zipCode\"]\r",
+							"    },\r",
+							"    \"user_id\": {\"type\": \"integer\"},\r",
+							"    \"user_first_name\": {\"type\": \"string\"},\r",
+							"    \"user_last_name\": {\"type\": \"string\"},\r",
+							"    \"user_contact_number\": {\"type\": \"integer\"},\r",
+							"    \"user_email_id\": {\"type\": \"string\"},\r",
+							"    \"creation_time\": {\"type\": \"string\"},\r",
+							"    \"last_mod_time\": {\"type\": \"string\"}\r",
+							"  },\r",
+							"  \"required\": [\"userAddress\", \"user_id\", \"user_first_name\", \"user_last_name\", \"user_contact_number\", \"user_email_id\", \"creation_time\", \"last_mod_time\"]\r",
+							"};\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData).to.have.property(\"user_id\");\r",
+							"});\r",
+							"pm.test(\"Data type verification with type\", function () {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"  const jsonData = pm.response.json();\r",
+							"\r",
+							"  // Verify user property data types\r",
+							"  pm.expect(jsonData.user_first_name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.user_last_name).to.be.a(\"string\");\r",
+							"  pm.expect(jsonData.user_contact_number).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.user_email_id).to.be.a(\"string\");\r",
+							"\r",
+							"  // Verify address property data types\r",
+							"  pm.expect(jsonData.userAddress.addressId).to.be.a(\"number\");\r",
+							"  pm.expect(jsonData.userAddress.plotNumber).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.street).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.state).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.country).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"string\";\r",
+							"  });\r",
+							"  pm.expect(jsonData.userAddress.zipCode).to.satisfy(function (value) {\r",
+							"    return value === null || typeof value === \"number\";\r",
+							"  });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user- invalid endpoint",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createuser",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createuser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data-mandatory fields empty",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"pl-123\",\r\n    \"street\": \"Main Stret\",\r\n    \"state\": \"New York\",\r\n    \"country\": \"USA\",\r\n    \"zipCode\": 12345\r\n  },\r\n\r\n  \"user_first_name\": \"\",\r\n  \"user_last_name\": \"\",\r\n  \"user_contact_number\": \"\",\r\n  \"user_email_id\": \"\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user misssing data-not mandatory fields empty",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"\",\r\n    \"street\": \"\",\r\n    \"state\": \"\",\r\n    \"country\": \"\",\r\n    \"zipCode\": 0\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data-plotno",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Plot number alphaNumeric validation \", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Plot number should contain alphaNumeric values only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"pl05\",\r\n    \"street\": \"street\",\r\n    \"state\": \"state\",\r\n    \"country\": \"country\",\r\n    \"zipCode\": 782456\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data-street",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"street field validation\", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Street should contain alphabet characters only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"pl-04\",\r\n    \"street\": \"sdgd6\",\r\n    \"state\": \"state\",\r\n    \"country\": \"country\",\r\n    \"zipCode\": 789455\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid date-state",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"pl-04\",\r\n    \"street\": \"sdgddfd\",\r\n    \"state\": \"texas4\",\r\n    \"country\": \"usa\",\r\n    \"zipCode\": 78945\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data-country",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"country field Validation\", function () {\r",
+							" \r",
+							" const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Country should contain alphabet characters only\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"pl-04\",\r\n    \"street\": \"sdgddfd\",\r\n    \"state\": \"texas\",\r\n    \"country\": \"123\",\r\n    \"zipCode\": 78945\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data- zipcode",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"pl-04\",\r\n    \"street\": \"sdgddfd\",\r\n    \"state\": \"austin\",\r\n    \"country\": \"usa\",\r\n    \"zipCode\": \"abc\"\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid missing mandatory Field lastName",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User Last Name is mandatory\")\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data mandatory Field lastName",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"contains alphabets only\")\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"45fgdfgf\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid missing mandatory Field firstName",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"Bad Request\");\r",
+							"});\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"user FirstName is mandatory\")\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data mandatory Field firstName",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"contains alphabets only\")\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"adb_7\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data mandatory Field contactno-less than 10 digit",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Phone Number is required and should contains 10 numeric values only\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Contact Number Validation less than 10 digit\", function () {\r",
+							"  const jsonData = pm.request.body;\r",
+							"  const contactNumber = jsonData.user_contact_number;\r",
+							"  const contactNumberRegex = /^\\d{10}$/;\r",
+							"  \r",
+							"  pm.expect(!contactNumberRegex.test(contactNumber)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": \"1111\",\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data mandatory Field contactno-special character",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": \"11&015s48d5\",\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user invalid data mandatory Field contactno -more than 10 digit",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Phone Number is required and should contains 10 numeric values only\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": \"1234567891011\",\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user missing data mandatory Field contactno",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"Phone Number is required and should contains 10 numeric values only\")\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": \"\",\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user with existing data mandatory Field contactno",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User already exist with same contact number\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Conflict\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": 1234567891,\r\n  \"user_email_id\": \"{{$randomEmail}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user missing mandatory Field email",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation message\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User email Id is required and should be in proper email format\")\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user with invalid data mandatory Field email",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation message\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User email Id is required and should be in proper email format\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email field validation\", function () {\r",
+							"  const jsonData = pm.request.body;\r",
+							"  const email = jsonData.user_email_id;\r",
+							"  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;\r",
+							"  \r",
+							"  pm.expect(!emailRegex.test(email)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"abcygy$b@acs.com\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post new user with existing data mandatory Field email",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const randomNumber = _.random(1000000000,9999999999)\r",
+							"pm.variables.set(\"randomNumber\", randomNumber );\r",
+							"\r",
+							"const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+							"const numbers = '0123456789';\r",
+							"let randomString = '';\r",
+							"// 2 random letters\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += letters.charAt(Math.floor(Math.random() * letters.length));\r",
+							"}\r",
+							"randomString += '-';\r",
+							"// 2 random numbers\r",
+							"for (let i = 0; i < 2; i++) {\r",
+							"  randomString += numbers.charAt(Math.floor(Math.random() * numbers.length));\r",
+							"}\r",
+							"pm.variables.set('randomString', randomString);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation message\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"User already exist with same email id\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email field validation\", function () {\r",
+							"  const jsonData = pm.request.body;\r",
+							"  const email = jsonData.user_email_id;\r",
+							"  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;\r",
+							"  \r",
+							"  pm.expect(!emailRegex.test(email)).to.be.true;\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Conflict\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{randomString}}\",\r\n    \"street\": \"{{$randomStreetName}}\",\r\n    \"state\": \"{{$randomCity}}\",\r\n    \"country\": \"{{$randomCountry}}\",\r\n    \"zipCode\": {{$randomInt}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{$randomFirstName}}\",\r\n  \"user_last_name\": \"{{$randomLastName}}\",\r\n  \"user_contact_number\": {{randomNumber}},\r\n  \"user_email_id\": \"Numpy@gmail.com\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/createusers",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post data driven",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userAddress\": {\r\n  \r\n    \"plotNumber\": \"{{plotNumber}}\",\r\n    \"street\": \"{{street}}\",\r\n    \"state\": \"{{state}}\",\r\n    \"country\": \"{{country}}\",\r\n    \"zipCode\": {{zipCode}}\r\n  },\r\n\r\n  \"user_first_name\": \"{{user_first_name}}\",\r\n  \"user_last_name\": \"{{user_last_name}}\",\r\n  \"user_contact_number\": {{user_contact_number}},\r\n  \"user_email_id\": \"{{user_email_id}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/{{endpoint}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"{{endpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by Id valid input",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+							"});\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"        \"status\": {\"type\": \"string\"},\r",
+							"        \"message\": {\"type\": \"string\"},\r",
+							"      },\r",
+							"      \"required\": [\"status\", \"message\"]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"deleted successfully\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by Id- invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuer/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuer",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by Id invalid input-nonexisting id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by Id invalid input -missing id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Bad Request\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/:userId",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by FirstName valid input",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+							"});\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"        \"status\": {\"type\": \"string\"},\r",
+							"        \"message\": {\"type\": \"string\"},\r",
+							"      },\r",
+							"      \"required\": [\"status\", \"message\"]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Data validation\", function () {\r",
+							"  const jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.message).contains(\"deleted successfully\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/username/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						"username",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": "{{user_first_name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by FirstName -invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/usernae/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						"usernae",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": "{{user_first_name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by FirstName invalid input-missing FirstName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"        \"status\": {\"type\": \"string\"},\r",
+							"        \"message\": {\"type\": \"string\"},\r",
+							"      },\r",
+							"      \"required\": [\"status\", \"message\"]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/username/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						"username",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by FirstName invalid input-non-exising FirstName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code Validation\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Content-Type header Validation\", () => {\r",
+							"  pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+							"});\r",
+							"pm.test(\"Status message validation\", function () {\r",
+							"    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+							"});\r",
+							"\r",
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"        \"status\": {\"type\": \"string\"},\r",
+							"        \"message\": {\"type\": \"string\"},\r",
+							"      },\r",
+							"      \"required\": [\"status\", \"message\"]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Schema validation\", function () {\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.expect(jsonData).to.be.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/deleteuser/username/:userFirstName",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						"username",
+						":userFirstName"
+					],
+					"variable": [
+						{
+							"key": "userFirstName",
+							"value": "xxxxx"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUrl",
+			"value": "https://userserviceapp-f5a54828541b.herokuapp.com/uap",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "userapi@2025",
+			"type": "string"
+		}
+	]
+}
